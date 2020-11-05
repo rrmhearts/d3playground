@@ -1,8 +1,7 @@
-import logo from './logo.svg';
 import './App.css';
 import Rectangle from './Rectangle'
 import RectHooks from './RectHooks'
-import Scatter from './Scatter';
+import Scatter from './Scatter/Scatter';
 
 function App() {
   return (

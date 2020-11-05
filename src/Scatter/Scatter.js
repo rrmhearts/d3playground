@@ -2,6 +2,8 @@ import React from "react";
 import { scaleLinear } from "d3-scale";
 import { extent } from "d3-array"
 
+import AxisLeft from './AxisLeft';
+import AxisBottom from './AxisBottom';
 
 function RandomData() {
   const data = [...Array(100)].map((e, i) => {
@@ -48,8 +50,11 @@ const circles = data.map((d, i) => (
 
   return (
     <div>
+      <h1>React + D3</h1>
       <svg width={w} height={h}>
         <g transform={`translate(${margin.left},${margin.top})`}>
+          <AxisLeft yScale={yScale} width={width} />
+          <AxisBottom xScale={xScale} height={height} />
           {circles}
         </g>
       </svg>
