@@ -7,7 +7,7 @@ class Rectangle extends Component {
     super(props);
 
     this.state = {
-      data: [5, 3, 6, 1, 2, 10, 4]
+      data: [1,2,3,4,5,6,7,8,9]
     }; // create a small array to use as test dataset
   }
 
@@ -36,10 +36,10 @@ class Rectangle extends Component {
       .attr("class", "new-element") // set the class of new elements to 'new-element'
       .transition() // add a cool transition to the below attributes
       .duration(1000) // duration of transition
-      .attr("width", value => value * 10) // set rect properties
-      .attr("height", 50) 
-      .attr("x", value => value + 10) 
-      .attr("y", value => (value * value) / 2) 
+      .attr("width", value => value * value/5 + value) // set rect properties
+      .attr("height", value => value * value/10 + value) 
+      .attr("x", value => value * value) 
+      .attr("y", value => (value * value * Math.sqrt(value)) / 20) 
       .attr("stroke", "blue") // set styles
       .attr("stroke-width", "3")
       .attr("fill", "transparent");

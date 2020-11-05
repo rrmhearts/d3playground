@@ -2,6 +2,7 @@ import logo from './logo.svg';
 import './App.css';
 import Rectangle from './Rectangle'
 import RectHooks from './RectHooks'
+import Scatter from './Scatter';
 
 function App() {
   return (
@@ -9,8 +10,7 @@ function App() {
       <header className="App-header">
         <Rectangle />
         <RectHooks />
-        <img src={logo} className="App-logo" alt="logo" />
-        
+        <Scatter />
       </header>
     </div>
   );
