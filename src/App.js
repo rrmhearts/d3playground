@@ -2,6 +2,7 @@ import './App.css';
 import Rectangle from './Rectangle'
 import RectHooks from './RectHooks'
 import Scatter from './Scatter/Scatter';
+import Draggable from './Dragging/Draggable';
 
 function App() {
   return (
@@ -11,6 +12,11 @@ function App() {
         <RectHooks />
         <Scatter />
       </header>
+      <Draggable
+        initialPos={{x: 100, y: 200}}
+      >
+        "Drag me"
+      </Draggable>
     </div>
   );
 }

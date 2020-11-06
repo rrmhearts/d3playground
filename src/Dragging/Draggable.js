@@ -1,84 +1,88 @@
-import React from 'react';
+import React, { Component } from 'react';
 import './Draggable.css'
 
-var Draggable = React.createClass({
-    getDefaultProps: function () {
-      return {
-        // allow the initial position to be passed in as a prop
-        initialPos: {x: 0, y: 0}
-      }
-    },
-    getInitialState: function () {
-      return {
-        pos: this.props.initialPos,
-        dragging: false,
-        rel: null // position relative to the cursor
-      }
-    },
-    // we could get away with not having this (and just having the listeners on
-    // our div), but then the experience would be possibly be janky. If there's
-    // anything w/ a higher z-index that gets in the way, then you're toast,
-    // etc.
-    componentDidUpdate: function (props, state) {
-      if (this.state.dragging && !state.dragging) {
-        document.addEventListener('mousemove', this.onMouseMove)
-        document.addEventListener('mouseup', this.onMouseUp)
-      } else if (!this.state.dragging && state.dragging) {
-        document.removeEventListener('mousemove', this.onMouseMove)
-        document.removeEventListener('mouseup', this.onMouseUp)
-      }
-    },
-  
-    // calculate relative position to the mouse and set dragging=true
-    onMouseDown: function (e) {
-      // only left mouse button
-      if (e.button !== 0) return
-      var pos = $(this.getDOMNode()).offset()
-      this.setState({
-        dragging: true,
-        rel: {
-          x: e.pageX - pos.left,
-          y: e.pageY - pos.top
-        }
-      })
-      e.stopPropagation()
-      e.preventDefault()
-    },
-    onMouseUp: function (e) {
-      this.setState({dragging: false})
-      e.stopPropagation()
-      e.preventDefault()
-    },
-    onMouseMove: function (e) {
-      if (!this.state.dragging) return
-      this.setState({
-        pos: {
-          x: e.pageX - this.state.rel.x,
-          y: e.pageY - this.state.rel.y
-        }
-      })
-      e.stopPropagation()
-      e.preventDefault()
-    },
-    render: function () {
-      // transferPropsTo will merge style & other props passed into our
-      // component to also be on the child DIV.
-      return this.transferPropsTo(React.DOM.div({
-        onMouseDown: this.onMouseDown,
-        style: {
-          position: 'absolute',
-          left: this.state.pos.x + 'px',
-          top: this.state.pos.y + 'px'
-        }
-      }, this.props.children))
+// var Draggable = React.createClass({
+export default class Draggable extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            pos: this.props.initialPos,
+            dragging: false,
+            rel: null // position relative to the cursor
+        };
+        this.dragRef = React.createRef();
+        this.onMouseDown = this.onMouseDown.bind(this);
+        this.onMouseMove = this.onMouseMove.bind(this);
+        this.onMouseUpOrLeave = this.onMouseUpOrLeave.bind(this);
     }
-  })
-  
-  React.renderComponent(Draggable({
-      initialPos: {x: 100, y: 200},
-      className: 'my-draggable',
-      style: {
-          border: '2px solid #aa5',
-          padding: '10px'
-      }
-  }, 'Drag Me! See how children are passed through to the div!'), document.body)
+
+    static defaultProps = {
+        initialPos: { x: 0, y: 0 }
+    }
+
+    // calculate relative position to the mouse and set dragging=true
+    onMouseDown(e) {
+        e.stopPropagation()
+        e.preventDefault()
+        // only left mouse button
+        // if (e.button !== 0) return;
+        let posRect = {
+            top: this.dragRef.current.getBoundingClientRect().top,
+            left: this.dragRef.current.getBoundingClientRect().left
+        }
+        let compWidth = this.dragRef.current.offsetWidth;
+        let compHeight = this.dragRef.current.offsetHeight;
+        this.setState({
+            dragging: true,
+            rel: {
+                xmargin: Math.min(Math.abs(e.pageX - posRect.left), compWidth),
+                ymargin: Math.min(Math.abs(e.pageY - posRect.top), compHeight)
+            }
+        });
+    }
+
+    onMouseUpOrLeave(e) {
+        e.stopPropagation()
+        e.preventDefault()
+        this.setState({ 
+            dragging: false,
+        })
+    }
+
+    onMouseMove(e) {
+        e.stopPropagation()
+        e.preventDefault()
+        if (!this.state.dragging) return;
+
+        let newPositionX = e.pageX - this.state.rel.xmargin;
+        let newPositionY = e.pageY - this.state.rel.ymargin;
+
+        this.setState({
+            // New top left corner
+            pos: {
+                x: newPositionX,
+                y: newPositionY
+            }
+        });
+    }
+
+    render() {
+        return (
+            <div ref={this.dragRef}
+                onMouseDown={this.onMouseDown}
+                onMouseUp={this.onMouseUpOrLeave}
+                onMouseLeave={this.onMouseUpOrLeave}
+                onMouseMove={this.onMouseMove}
+                style={{
+                    position: 'absolute',
+                    left: this.state.pos.x + 'px',
+                    top: this.state.pos.y + 'px',
+                    border: '2px solid pink',
+                    padding: '10px'
+                }}
+                className='my-draggable'
+            >
+                {this.props.children}
+            </div>)
+    }
+}

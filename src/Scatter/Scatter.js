@@ -1,7 +1,7 @@
-import React, { useRef } from "react";
+import React from "react";
 import { scaleLinear } from "d3-scale";
 import { extent } from "d3-array"
-import { select, selectAll } from "d3"
+// import { select, selectAll } from "d3"
 
 import AxisLeft from './AxisLeft';
 import AxisBottom from './AxisBottom';
