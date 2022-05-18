@@ -3,6 +3,7 @@ import Rectangle from './Rectangle'
 import RectHooks from './RectHooks'
 import Scatter from './Scatter/Scatter';
 import Draggable from './Dragging/Draggable';
+import QuoteApp from './QuoteApp';
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
         <Rectangle />
         <RectHooks />
         <Scatter />
+        <QuoteApp />
       </header>
       <Draggable
         initialPos={{x: 100, y: 200}}
